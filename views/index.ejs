@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/main.css">
+    <title>Weather for Bern</title>
+</head>
+<body>
+    <div class="weatherMain">
+        <h1>Weather Information for Bern</h1>
+
+        <h2>Current Weather</h2>
+        <p>Temperature: <%= currentTemp %>°C</p>
+        <p>Condition: <%= currentWeather %></p>
+        <img src="<%= icon %>" alt="Weather Icon">
+    
+        <h2>3-Day Forecast</h2>
+        <ul>
+            <% dailyForecast.forEach(day => { %>
+                <div class="weatherItem">
+                    Date: <%= new Date(day.dt * 1000).toLocaleDateString() %> <br>
+                    Min Temp: <%= day.temp.min %>°C <br>
+                    Max Temp: <%= day.temp.max %>°C <br>
+                    Weather: <%= day.weather[0].description %> <br>
+                    <img src="http://openweathermap.org/img/wn/<%= day.weather[0].icon %>.png" alt="Weather Icon">
+                </div>
+            <% }) %>
+        </ul>
+    </div>
+</body>
+</html>
