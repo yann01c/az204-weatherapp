@@ -33,7 +33,7 @@ app.get("/", async (req, res) => {
     try {
         const { lat, lon } = await getCoordinates(city, country);
 
-        const weatherApiUrl = `https://api.openweathermap.org/data/3.0/onecall?lat=${lat}&lon=${lon}&exclude=minutely,hourly,alerts&lang=de&units=metric&appid=${WEATHER_API_KEY}`;
+        const weatherApiUrl = `https://api.openweathermap.org/data/3.0/onecall?lat=${lat}&lon=${lon}&exclude=minutely,hourly,alerts&lang=en&units=metric&appid=${WEATHER_API_KEY}`;
         const weatherResponse = await axios.get(weatherApiUrl);
 
         const weatherData = weatherResponse.data;
