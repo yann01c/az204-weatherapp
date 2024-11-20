@@ -16,17 +16,15 @@
         <img src="<%= icon %>" alt="Weather Icon">
     
         <h2>3-Day Forecast</h2>
-        <ul>
-            <% dailyForecast.forEach(day => { %>
-                <div class="weatherItem">
-                    Date: <%= new Date(day.dt * 1000).toLocaleDateString() %> <br>
-                    Min Temp: <%= day.temp.min %>°C <br>
-                    Max Temp: <%= day.temp.max %>°C <br>
-                    Weather: <%= day.weather[0].description %> <br>
-                    <img src="http://openweathermap.org/img/wn/<%= day.weather[0].icon %>.png" alt="Weather Icon">
-                </div>
-            <% }) %>
-        </ul>
+        <% dailyForecast.forEach(day => { %>
+            <div class="weatherItem">
+                Date: <%= new Date(day.dt * 1000).toLocaleDateString() %> <br>
+                Min Temp: <%= day.temp.min %>°C <br>
+                Max Temp: <%= day.temp.max %>°C <br>
+                Weather: <%= day.weather[0].description %> <br>
+                <img src="http://openweathermap.org/img/wn/<%= day.weather[0].icon %>.png" alt="Weather Icon">
+            </div>
+        <% }) %>
     </div>
 </body>
 </html>
