@@ -6,7 +6,6 @@
   "scripts": {
     "test": "echo \"test",
     "start": "node app.js"
-
   },
   "repository": {
     "type": "git",
@@ -19,8 +18,11 @@
   },
   "homepage": "https://github.com/yann01c/az204-weatherapp#readme",
   "dependencies": {
+    "@azure/cosmos": "^4.2.0",
     "axios": "^1.7.7",
+    "dotenv": "^16.4.5",
     "ejs": "^3.1.10",
-    "express": "^4.21.1"
+    "express": "^4.21.1",
+    "os": "^0.1.2"
   }
 }

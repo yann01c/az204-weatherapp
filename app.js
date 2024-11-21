@@ -1,9 +1,44 @@
 const express = require("express");
 const axios = require("axios");
+const { CosmosClient } = require("@azure/cosmos");
+const { Template } = require("ejs");
+
+require('dotenv').config();
 
 const app = express();
 app.use(express.static("public"));
 app.set("view engine", "ejs");
+
+const connectionString = process.env.COSMOS_CONNECTION_STRING;
+const client = new CosmosClient(connectionString);
+
+const databaseID = "cosmosweather";
+const containerID = "CTemp1";
+
+const container = client.database(databaseID).container(containerID);
+
+// async function setupDatabase() {
+//     const { database } = await client.databases.createIfNotExists({ id: databaseID });
+//     console.log(`Database created: ${database.id}`);
+
+//     const { container } = await database.containers.createIfNotExists({
+//         id: containerID,
+//         partitionKey: { paths: ["/weather"] }, // Replace with your partition key
+//     });
+//     console.log(`Container created: ${container.id}`);
+// }
+
+// setupDatabase().catch(console.error);
+
+async function saveWeatherData(weatherData) {
+    try {
+        const response = await container.items.create(weatherData);
+        console.log("Weather data saved:", response.resource);
+    } catch (err) {
+        console.error("Error saving data to Cosmos DB:", err);
+    }
+}
+
 
 const WEATHER_API_KEY = "43ec2481a55940206853902b87d623bd";
 
@@ -37,6 +72,12 @@ app.get("/", async (req, res) => {
         const weatherResponse = await axios.get(weatherApiUrl);
 
         const weatherData = weatherResponse.data;
+
+        const cosmosData = {
+            temp: weatherData.current.temp
+        }
+        
+        saveWeatherData(cosmosData);
 
         res.render("index", {
             city: city,
