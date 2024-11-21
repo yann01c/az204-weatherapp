@@ -30,6 +30,7 @@ const container = client.database(databaseID).container(containerID);
 
 // setupDatabase().catch(console.error);
 
+//////////////////////////////////////////////////////////////////////////////////
 async function saveWeatherData(weatherData) {
     try {
         const response = await container.items.create(weatherData);
@@ -39,8 +40,36 @@ async function saveWeatherData(weatherData) {
     }
 }
 
+async function queryTemps() {
 
-const WEATHER_API_KEY = "43ec2481a55940206853902b87d623bd";
+    try {
+        console.log(`Querying locations from container: ${containerID}`);
+        
+        const querySpec = {
+            query: "SELECT DISTINCT CTemp1.temp FROM CTemp1 WHERE CTemp1.temp < 1"
+        };
+
+        // Execute the query
+        const { resources } = await container.items.query(querySpec).fetchAll();
+
+        let temps = [];
+
+        console.log("Temps:");
+        resources.forEach((item) => {
+            console.log(item);
+            temps.push(item)
+        });
+
+        console.log("Temps in my Var: ", temps)
+
+        return resources.map(item => item); // Return only the locations
+    } catch (err) {
+        console.error("Error querying locations from Cosmos DB:", err.message);
+    }
+}
+//////////////////////////////////////////////////////////////////////////////////
+
+const WEATHER_API_KEY = process.env.WEATHER_API_KEY;
 
 async function getCoordinates(city, country) {
     const geoApiUrl = `http://api.openweathermap.org/geo/1.0/direct?q=${city},${country}&limit=1&appid=${WEATHER_API_KEY}`;
@@ -76,7 +105,10 @@ app.get("/", async (req, res) => {
         const cosmosData = {
             temp: weatherData.current.temp
         }
-        
+
+        var getTemps = await queryTemps()
+        console.log("Temps from Func: ",getTemps);
+
         saveWeatherData(cosmosData);
 
         res.render("index", {
@@ -85,6 +117,7 @@ app.get("/", async (req, res) => {
             currentWeather: weatherData.current.weather[0].description,
             icon: `https://openweathermap.org/img/wn/${weatherData.current.weather[0].icon}.png`,
             dailyForecast: weatherData.daily.slice(0, 3),
+            dbTemps: getTemps
         });
     } catch (error) {
         console.error("Error fetching weather data:", error.message);
